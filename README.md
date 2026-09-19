@@ -1,0 +1,1 @@
+# Kakelugn-Rorspis-Kalkyl-av-Valter-Isander
