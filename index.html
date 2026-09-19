@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offertkalkyl – Kakelugn / Rörspis</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d35400;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+            --text-color: #2b2b2b;
+            --muted-text: #6c757d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 24px 30px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .header-top {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .author-info {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            color: #f8f9fa;
+        }
+
+        .author-sub {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .author-sub a {
+            color: #f39c12;
+            text-decoration: none;
+        }
+
+        .author-sub a:hover {
+            text-decoration: underline;
+        }
+
+        header h1 {
+            margin: 0 0 8px 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            opacity: 0.8;
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.88rem;
+            margin-bottom: 6px;
+            color: #495057;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input {
+            flex: 1;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .input-group .unit {
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-left: none;
+            padding: 10px 12px;
+            font-size: 0.88rem;
+            color: #495057;
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .summary-card {
+            background-color: #fff8f3;
+            border: 2px solid #f8d7da;
+            border-left: 6px solid var(--accent-color);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-row.total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            padding-top: 16px;
+            margin-top: 8px;
+            border-top: 2px solid #f5c6cb;
+        }
+
+        .summary-value {
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--muted-text);
+            font-size: 0.85rem;
+        }
+
+        @media print {
+            .action-bar { display: none !important; }
+            body { background-color: white; color: black; padding: 0; }
+            .card { box-shadow: none; border: 1px solid #ccc; }
+            input, select { border: none !important; background: transparent !important; font-weight: bold; }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .card { padding: 16px; }
+            .action-bar { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-top">
+            <div class="author-info">Valter Isander</div>
+            <div class="author-sub">Rönninge | <a href="https://www.isander.se" target="_blank" rel="noopener">www.Isander.se</a></div>
+        </div>
+        <h1>Offertkalkyl – Kakelugn & Rörspis</h1>
+        <p>Interaktiv modell för beräkning av offerter exkl. och inkl. moms samt ROT-avdrag.</p>
+    </header>
+
+    <!-- Knapprad -->
+    <div class="action-bar">
+        <button type="button" id="btn-print" class="btn btn-accent">
+            🖨️ Skriv ut / Spara som PDF
+        </button>
+        <button type="button" id="btn-share" class="btn">
+            🔗 Dela / Kopiera länk
+        </button>
+        <button type="button" id="btn-reset" class="btn">
+            🔄 Återställ standardvärden
+        </button>
+    </div>
+
+    <!-- Objekt & Kund -->
+    <div class="card">
+        <h2>1. Objekt & Kunduppgifter</h2>
+        <div class="grid">
+            <div class="form-group">
+                <label for="kund">Kundnamn</label>
+                <input type="text" id="kund" value="Valter Isander">
+            </div>
+            <div class="form-group">
+                <label for="objekttyp">Objekttyp</label>
+                <input type="text" id="objekttyp" value="Kakelugn rund vit">
+            </div>
+            <div class="form-group">
+                <label for="hojd">Höjd (m)</label>
+                <div class="input-group">
+                    <input type="number" step="0.1" id="hojd" value="2.3">
+                    <span class="unit">m</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="alder">Ålder / Årtal</label>
+                <input type="text" id="alder" value="1900–1920">
+            </div>
+            <div class="form-group">
+                <label for="antal_plattor">Antal kakelplattor/element</label>
+                <div class="input-group">
+                    <input type="number" id="antal_plattor" value="80">
+                    <span class="unit">st</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="atkomst">Åtkomstfaktor (1 = normal)</label>
+                <input type="number" step="0.1" id="atkomst" value="1.1">
+            </div>
+            <div class="form-group">
+                <label for="rot_relevant">ROT-avdrag relevant?</label>
+                <select id="rot_relevant">
+                    <option value="Ja" selected>Ja</option>
+                    <option value="Nej">Nej</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Företagets Kostnader -->
+    <div class="card">
+        <h2>2. Företagets Timkostnader & Påslag</h2>
+        <div class="grid">
+            <div class="form-group">
+                <label for="lonekostnad">Lönekostnad inkl. arb.avg (kr/h)</label>
+                <div class="input-group">
+                    <input type="number" id="lonekostnad" value="350">
+                    <span class="unit">kr/h</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ovrig_kostnad">Övrig företagskostnad per h</label>
+                <div class="input-group">
+                    <input type="number" id="ovrig_kostnad" value="300">
+                    <span class="unit">kr/h</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="sjalvkostnad_h">Självkostnad per arbetstimme</label>
+                <div class="input-group">
+                    <input type="number" id="sjalvkostnad_h" value="650" readonly style="background-color:#e9ecef;">
+                    <span class="unit">kr/h</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="materialpaslag">Materialpåslag (%)</label>
+                <div class="input-group">
+                    <input type="number" step="1" id="materialpaslag" value="5">
+                    <span class="unit">%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="vinstpaslag_fast">Vinst påslag (fast kr)</label>
+                <div class="input-group">
+                    <input type="number" id="vinstpaslag_fast" value="1300">
+                    <span class="unit">kr</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Arbete Timkalkyl -->
+    <div class="card">
+        <h2>3. Arbete – Timkalkyl</h2>
+        <div class="grid">
+            <div class="form-group">
+                <label for="t_forberedelse">Förberedelse/etablering</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_forberedelse" value="4"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="t_nedtagning">Nedtagning</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_nedtagning" value="5"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="t_rengoring">Rengöring/sortering</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_rengoring" value="6"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="t_fundament">Fundament/botten</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_fundament" value="2"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="t_ommurning">Ommurning</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_ommurning" value="35"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="t_kakel">Kakel (rengöring/mont/fog)</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_kakel" value="10"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="t_puts">Puts/avslutning</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_puts" value="5"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="t_stadning">Städning</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_stadning" value="3"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="t_proveldning">Proveldning/dok.</label>
+                <div class="input-group"><input type="number" class="time-input" id="t_proveldning" value="2"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="arbetsrisk">Arbetsrisk / Komplexitetsfaktor</label>
+                <input type="number" step="0.1" id="arbetsrisk" value="1.0">
+            </div>
+        </div>
+        <div style="margin-top: 15px; font-weight: bold; font-size: 1.05rem;">
+            Totalt antal arbetstimmar: <span id="total_timmar">72</span> h
+        </div>
+    </div>
+
+    <!-- Material -->
+    <div class="card">
+        <h2>4. Materialkostnader</h2>
+        <div class="grid">
+            <div class="form-group">
+                <label for="m_tegel">Tegel</label>
+                <div class="input-group"><input type="number" class="mat-input" id="m_tegel" value="3500"><span class="unit">kr</span></div>
+            </div>
+            <div class="form-group">
+                <label for="m_eldfast">Eldfast material</label>
+                <div class="input-group"><input type="number" class="mat-input" id="m_eldfast" value="1500"><span class="unit">kr</span></div>
+            </div>
+            <div class="form-group">
+                <label for="m_bruk">Bruk/puts/isolering</label>
+                <div class="input-group"><input type="number" class="mat-input" id="m_bruk" value="1800"><span class="unit">kr</span></div>
+            </div>
+            <div class="form-group">
+                <label for="m_kakel">Kakel/komplettering</label>
+                <div class="input-group"><input type="number" class="mat-input" id="m_kakel" value="2500"><span class="unit">kr</span></div>
+            </div>
+            <div class="form-group">
+                <label for="m_luckor">Luckor/spjäll/övrigt</label>
+                <div class="input-group"><input type="number" class="mat-input" id="m_luckor" value="1200"><span class="unit">kr</span></div>
+            </div>
+            <div class="form-group">
+                <label for="m_forbrukning">Förbrukning/emballage</label>
+                <div class="input-group"><input type="number" class="mat-input" id="m_forbrukning" value="800"><span class="unit">kr</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resor & Externt -->
+    <div class="card">
+        <h2>5. Resor & Externa Tjänster</h2>
+        <div class="grid">
+            <div class="form-group">
+                <label for="r_avstand">Avstånd resa totalt (km)</label>
+                <div class="input-group"><input type="number" id="r_avstand" value="80"><span class="unit">km</span></div>
+            </div>
+            <div class="form-group">
+                <label for="r_bilkostnad">Bilkostnad (kr/km)</label>
+                <div class="input-group"><input type="number" id="r_bilkostnad" value="5"><span class="unit">kr/km</span></div>
+            </div>
+            <div class="form-group">
+                <label for="r_restid">Restid tur/retur (h)</label>
+                <div class="input-group"><input type="number" step="0.5" id="r_restid" value="1.5"><span class="unit">h</span></div>
+            </div>
+            <div class="form-group">
+                <label for="r_parkering">Parkering/övrigt</label>
+                <div class="input-group"><input type="number" id="r_parkering" value="200"><span class="unit">kr</span></div>
+            </div>
+            <div class="form-group">
+                <label for="r_sotare">Sotare/skorsten (extern)</label>
+                <div class="input-group"><input type="number" id="r_sotare" value="2500"><span class="unit">kr</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sammanställning -->
+    <div class="card summary-card">
+        <h2>6. Sammanställning & Kalkylresultat</h2>
+        
+        <div class="summary-row">
+            <span class="summary-label">Arbetskostnad (Självkostnad):</span>
+            <span class="summary-value" id="res_arbete">0 kr</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Material inkl. påslag:</span>
+            <span class="summary-value" id="res_material">0 kr</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Resor + externt:</span>
+            <span class="summary-value" id="res_resa">0 kr</span>
+        </div>
+        <div class="summary-row" style="font-weight: bold; border-top: 1px solid #ccc; padding-top: 8px;">
+            <span class="summary-label">Beräknad Självkostnad:</span>
+            <span class="summary-value" id="res_sjalvkostnad">0 kr</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Vinstpåslag (fast):</span>
+            <span class="summary-value" id="res_vinst">0 kr</span>
+        </div>
+        <div class="summary-row" style="font-weight: bold;">
+            <span class="summary-label">Offertpris före ROT (exkl. moms):</span>
+            <span class="summary-value" id="res_offert_exkl">0 kr</span>
+        </div>
+        <div class="summary-row" id="rot_row">
+            <span class="summary-label">ROT-avdrag (30% på arbete):</span>
+            <span class="summary-value" id="res_rot">-0 kr</span>
+        </div>
+        <div class="summary-row total">
+            <span class="summary-label">KUNDPRIS EFTER ROT (Exkl. moms):</span>
+            <span class="summary-value" id="res_kund_exkl">0 kr</span>
+        </div>
+        <div class="summary-row total" style="color: #27ae60; border-top: none; padding-top: 0;">
+            <span class="summary-label">KUNDPRIS EFTER ROT (Inkl. moms 25%):</span>
+            <span class="summary-value" id="res_kund_inkl">0 kr</span>
+        </div>
+    </div>
+
+    <footer>
+        <p>Interaktiv kalkylmodell utvecklad av Valter Isander, Rönninge | <a href="https://www.isander.se" target="_blank" style="color: inherit;">www.Isander.se</a></p>
+        <p style="margin-top: 4px; opacity: 0.8;">Version 2026-09-19</p>
+    </footer>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function formatSEK(amount) {
+        return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(amount) + ' kr';
+    }
+
+    function calculate() {
+        const lonekostnad = parseFloat(document.getElementById('lonekostnad').value) || 0;
+        const ovrigKostnad = parseFloat(document.getElementById('ovrig_kostnad').value) || 0;
+        const sjalvkostnadH = lonekostnad + ovrigKostnad;
+        document.getElementById('sjalvkostnad_h').value = sjalvkostnadH;
+
+        const timeInputs = document.querySelectorAll('.time-input');
+        let sumTimmar = 0;
+        timeInputs.forEach(input => {
+            sumTimmar += parseFloat(input.value) || 0;
+        });
+        const arbetsrisk = parseFloat(document.getElementById('arbetsrisk').value) || 1.0;
+        const totalTimmar = sumTimmar * arbetsrisk;
+        document.getElementById('total_timmar').innerText = totalTimmar.toFixed(1);
+
+        const arbetskostnadSjalv = totalTimmar * sjalvkostnadH;
+
+        const matInputs = document.querySelectorAll('.mat-input');
+        let matSum = 0;
+        matInputs.forEach(input => {
+            matSum += parseFloat(input.value) || 0;
+        });
+        const materialpaslag = (parseFloat(document.getElementById('materialpaslag').value) || 0) / 100;
+        const materialInklPaslag = matSum * (1 + materialpaslag);
+
+        const avstand = parseFloat(document.getElementById('r_avstand').value) || 0;
+        const bilkostnad = parseFloat(document.getElementById('r_bilkostnad').value) || 0;
+        const restid = parseFloat(document.getElementById('r_restid').value) || 0;
+        const parkering = parseFloat(document.getElementById('r_parkering').value) || 0;
+        const sotare = parseFloat(document.getElementById('r_sotare').value) || 0;
+
+        const resaExternt = (avstand * bilkostnad) + (restid * sjalvkostnadH) + parkering + sotare;
+
+        const sjalvkostnadTot = arbetskostnadSjalv + materialInklPaslag + resaExternt;
+        const vinst = parseFloat(document.getElementById('vinstpaslag_fast').value) || 0;
+        const offertExklMoms = sjalvkostnadTot + vinst;
+
+        const rotRelevant = document.getElementById('rot_relevant').value === 'Ja';
+        let rotBelopp = 0;
+        if (rotRelevant) {
+            rotBelopp = 0.30 * arbetskostnadSjalv;
+        }
+
+        const kundExklMoms = offertExklMoms - rotBelopp;
+        const kundInklMoms = kundExklMoms * 1.25;
+
+        document.getElementById('res_arbete').innerText = formatSEK(arbetskostnadSjalv);
+        document.getElementById('res_material').innerText = formatSEK(materialInklPaslag);
+        document.getElementById('res_resa').innerText = formatSEK(resaExternt);
+        document.getElementById('res_sjalvkostnad').innerText = formatSEK(sjalvkostnadTot);
+        document.getElementById('res_vinst').innerText = formatSEK(vinst);
+        document.getElementById('res_offert_exkl').innerText = formatSEK(offertExklMoms);
+        document.getElementById('res_rot').innerText = '-' + formatSEK(rotBelopp);
+        document.getElementById('res_kund_exkl').innerText = formatSEK(kundExklMoms);
+        document.getElementById('res_kund_inkl').innerText = formatSEK(kundInklMoms);
+    }
+
+    // Koppla händelser till knappar
+    document.getElementById('btn-print').addEventListener('click', function() {
+        window.print();
+    });
+
+    document.getElementById('btn-share').addEventListener('click', function() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Offertkalkyl – Kakelugn & Rörspis',
+                text: 'Interaktiv offertkalkyl för kakelugn och rörspis av Valter Isander.',
+                url: window.location.href
+            }).catch(() => {});
+        } else if (navigator.clipboard) {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Länken till kalkylen har kopierats till urklipp!');
+            }).catch(() => {
+                alert('Det gick inte att kopiera länken.');
+            });
+        } else {
+            alert('Delning stöds inte i denna miljö. Prova när sidan ligger på webben.');
+        }
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', function() {
+        if (confirm('Vill du återställa alla fält till ursprungliga värden?')) {
+            location.reload();
+        }
+    });
+
+    // Koppla kalkylering till ändringar
+    document.querySelectorAll('input, select').forEach(element => {
+        element.addEventListener('input', calculate);
+        element.addEventListener('change', calculate);
+    });
+
+    calculate();
+});
+</script>
+
+</body>
+</html>
